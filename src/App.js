@@ -1,24 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+
+import React, { useState, useRef, useEffect } from "react";
+import "./App.css";
+import ErrorMessage from "./components/ErrorMessage";
+import Modal from "./components/Modal";
+
 
 function App() {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [num, setNum] = useState();
+  const [errorMessage, setErrorMessage] = useState(false)
+
+  const ref = useRef();
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <h1>Please Enter Your 10 Digit Mobile Number For OTP Verification.</h1>
+    <input
+      className="numInput"
+      placeholder="Mobile Number"
+      type="text"
+      value={num}
+      onChange={(e) => {
+        if(!/[0-9]/.test(e.key) && e.key != "Backspace")
+        setNum(e.target.value.replace(/\D/g, ''))
+        else
+        setNum(e.target.value)}}
+      maxLength="10"
+    />
+    { errorMessage && <ErrorMessage closeBox={ref} /> }
+    <button
+      className="openModalBtn"
+      onClick={() => {
+        num && num.length=="10" ?
+        setModalOpen(true) : setErrorMessage(true)
+      }}
+    >
+      Get OTP
+    </button>
+
+    {modalOpen && <Modal setOpenModal={setModalOpen} number={num} />}
+  </div>
   );
 }
 
